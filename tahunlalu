@@ -1,0 +1,145 @@
+gudang = [['sabun', 5000, 2], ['sikat gigi', 3000, 2], ['pasta gigi', 2500, 2], ['deterjen', 2000, 2], ['pewangi', 1000, 2]]
+
+print('List barang toko barokah: ')
+for barang in gudang:
+    print(barang)
+
+def penambah_barang(gudang):
+    print('Barang yang ada di gudang saat ini adalah')
+    for barang in gudang:
+        print(barang)
+    print('-'*50)
+    jumlah = int(input('Masukkan total jenis barang: '))
+    if jumlah < 2:
+        print('Minimal menambahkan 2 jenis barang')
+    else:
+        for i in range(1, jumlah+1):
+            print(f'Barang ke {i}')
+            nama = input('masukkan nama barang: ')
+            print(f'masukkan nama barang: {nama}')
+            banyak = int(input(f'Masukkan total {nama}: '))
+            print(f'masukkan total {nama}: {banyak}')
+            for barang in gudang:
+                if nama in barang:
+                    item = barang
+                    barang[2] = barang[2] + banyak
+            print(f'Penambahan berhasil, total {nama} saat ini adalah: {item[2]}')
+        print('Barang yang ada di gudang saat ini adalah')
+        print('-'*50)
+        for barang in gudang:
+            print(barang)
+
+penambah_barang(gudang)
+
+# 2
+# 1. Bertemu teller
+queueSatu = []
+# 2. Bertemu CS
+queueDua = []
+# 3. antre ATM
+queueTiga = []
+
+def sistem_antrian():
+    pilihan = int(input('''Selamat datang di Antrean BankUlar
+          Adakah yang bisa kami bantu?
+          Menu: 
+              1. bertemu Teller
+              2. bertemu CS
+              3. antre ATM
+          Masukkan menu pilihan anda: '''))
+    print(f'Masukkan menu pilihan anda: {pilihan}')
+    nama = input('Masukkan nama anda: ')
+    print(f'Masukkan nama anda: {nama}')
+    if pilihan == 1:
+        queueSatu.append(nama)
+        print(f'Terima kasih, {nama} telah masuk ke antrean {queueSatu} dengan nomor antrean {len(queueSatu)}')
+    elif pilihan == 2:
+        queueDua.append(nama)
+        print(f'Terima kasih, {nama} telah masuk ke antrean {queueDua} dengan nomor antrean {len(queueDua)}')
+    elif pilihan == 3:
+        queueTiga.append(nama)
+        print(f'Terima kasih, {nama} telah masuk ke antrean {queueTiga} dengan nomor antrean {len(queueTiga)}')
+sistem_antrian()
+
+#3
+def bubble_sort(list_angka):
+    ganjil = [x for x in list_angka if x % 2 != 0]
+    genap = [x for x in list_angka if x % 2 == 0]
+    n_ganjil = len(ganjil)
+    n_genap = len(genap)
+    for i in range(n_ganjil):
+        cursor = 0
+        for i in range(n_ganjil-1):
+            if ganjil[cursor] > ganjil[cursor+1]:
+                ganjil[cursor], ganjil[cursor+1] = ganjil[cursor+1], ganjil[cursor]
+            cursor+=1
+    for i in range(n_genap):
+        cursor = 0
+        for i in range(n_genap-1):
+            if genap[cursor] > genap[cursor+1]:
+                genap[cursor], genap[cursor+1] = genap[cursor+1], genap[cursor]
+            cursor+=1
+    list_angka = ganjil + genap
+    return list_angka
+
+angka = [5, 4, 2, 3, 1, 9, 0, 7, 6, 3, 9]
+print(bubble_sort(angka))
+
+# 4
+def create_graph():
+    graph = {
+        'Gresik': {'Surabaya': 9, 'Mojokerto': 11},
+        'Surabaya': {'Gresik':9, 'Sidoarjo': 3},
+        'Mojokerto': {'Gresik': 11, 'Sidoarjo': 13},
+        'Sidoarjo': {'Surabaya': 3, 'Mojokerto': 13,'Pasuruan': 4},
+        'Pasuruan': {'Sidoarjo': 4, 'Jember': 6, 'Malang': 7},
+        'Jember': {'Pasuruan': 6, 'Malang': 15},
+        'Malang': {'Pasuruan': 7, 'Jember': 15}
+    }
+    return graph
+
+def dijkstra(graph, start, end):
+    # Initialize distances with infinity and set the distance to the start node to 0
+    distances = {node: float('infinity') for node in graph}
+    distances[start] = 0
+    
+    # Dictionary to keep track of the best path to each node
+    previous_nodes = {node: None for node in graph}
+    
+    # List to keep track of nodes to visit (tuple of (distance, node))
+    nodes_to_visit = [(0, start)]
+    
+    while nodes_to_visit:
+        # Sort the list and pop the node with the smallest distance
+        nodes_to_visit.sort()
+        current_distance, current_node = nodes_to_visit.pop(0)
+        
+        # If we have reached the end node, reconstruct the path
+        if current_node == end:
+            path = []
+            while previous_nodes[current_node] is not None:
+                path.insert(0, current_node)
+                current_node = previous_nodes[current_node]
+            path.insert(0, start)
+            return distances[end], path
+        
+        # Check neighbors
+        for neighbor, weight in graph[current_node].items():
+            distance = current_distance + weight
+            
+            # Only consider this new path if it's better
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                previous_nodes[neighbor] = current_node
+                nodes_to_visit.append((distance, neighbor))
+    
+    return float('infinity'), []  # If the end node is unreachable, return infinity and an empty path
+
+# Example usage
+graph = create_graph()
+start_node = 'Surabaya'
+end_node = 'Malang'
+shortest_distance, path = dijkstra(graph, start_node, end_node)
+
+print(f"Shortest distance from node {start_node} to node {end_node}: {shortest_distance}")
+print(f"Path: {' -> '.join(path)}")
